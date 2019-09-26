@@ -26,28 +26,33 @@ class MovieBrowserDetailViewController: UIViewController {
     var movieBrowserDetails: Result?
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        loadSelectedMovieDetails()
+        // Do any additional setup after loading the view.
+    }
+    func loadSelectedMovieDetails() {
         movieTitle.text = movieBrowserDetails?.originalTitle ?? ""
         let posterImage = movieBrowserDetails?.posterPath ?? ""
         let imagePath = imagePosterURL + posterImage
         let imageURL = URL(string: imagePath)
-        moviePoster?.sd_setImage(with: imageURL, placeholderImage: nil, completed: { (image, error, _, _) in
-            if let photo = image {
-                if error == nil, let _ = photo.pngData() {
-                    //    UserDefaultsManager.profilePic = profilePic
+        if posterImage != "" {
+            moviePoster?.sd_setImage(with: imageURL, placeholderImage: nil, completed: { (image, error, _, _) in
+                if let photo = image {
+                    if error == nil, let _ = photo.pngData() {
+                        //    UserDefaultsManager.profilePic = profilePic
+                    }
                 }
-            }
-        })
+            })
+        } else {
+            self.moviePoster.image = UIImage(named: "noposter.png")
+        }
         movieLanguage.text = movieBrowserDetails?.originalLanguage ?? ""
         movieType.text = "2D | U/A"
         movieReleaseDate.text = movieBrowserDetails?.releaseDate
         movieVoteAverage.text = String(describing: movieBrowserDetails?.voteAverage ?? 0) + " User rating"
         movieSynopsis.text = movieBrowserDetails?.overview ?? ""
-        // Do any additional setup after loading the view.
     }
-    
     @IBAction func backButtonTapped(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: false)
+        self.navigationController?.popViewController(animated: true)
     }
     
     /*

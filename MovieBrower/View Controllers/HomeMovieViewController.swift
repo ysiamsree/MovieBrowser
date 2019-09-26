@@ -36,7 +36,7 @@ class HomeMovieViewController: UIViewController {
     var page = 1
     var isLoadingList = false
     var selectedSortOrder: sortOrder? = .defaultSort
-    var selectedIndex: Int = sortOrder.defaultSort.rawValue
+    var selectedIndex: Int = 0
     var sortedBy: String = sortOrder.mostPopular.sortString
     @IBOutlet weak var filterButton: UIButton!
     @IBOutlet weak var noResultFound: UILabel!
@@ -51,14 +51,14 @@ class HomeMovieViewController: UIViewController {
         movieBrowserCollectionView.dataSource = self
         searchMovieTextField.addTarget(self, action: #selector(textFieldDidChange(_:)),
                                        for: UIControl.Event.editingChanged)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
-        self.view.addGestureRecognizer(tapGesture)
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
+//        self.view.addGestureRecognizer(tapGesture)
         fetchMovieList(pageNumber: page, sortOrder: sortedBy)
         noResultFound.text = "No Movie found"
     }
-    @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
-        searchMovieTextField.resignFirstResponder()
-    }
+//    @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+//        searchMovieTextField.resignFirstResponder()
+//    }
     func showHideNoDataWithMainDataLabel() {
         if movieBrowserList.results?.count ?? 0 <= 0 {
             self.movieBrowserCollectionView.isHidden = true
@@ -200,7 +200,7 @@ extension HomeMovieViewController: UICollectionViewDelegate, UICollectionViewDat
                     movieDetailScreen.movieBrowserDetails = movieResults
                 }
             }
-            self.navigationController?.pushViewController(movieDetailScreen, animated: false)
+            self.navigationController?.pushViewController(movieDetailScreen, animated: true)
         }
     }
     
@@ -227,9 +227,9 @@ extension HomeMovieViewController: UIScrollViewDelegate {
 }
 
 extension HomeMovieViewController: applySortOrderDelegate {
-    func applySortOrder(orderValue: sortOrder) {
+    func applySortOrder(orderValue: sortOrder, selectedIndexValue: Int) {
         selectedSortOrder = orderValue
-        selectedIndex = orderValue.rawValue
+        selectedIndex = selectedIndexValue
         var sortArray: [Result]?
         if searchActive {
             searchBrowserList.results = []

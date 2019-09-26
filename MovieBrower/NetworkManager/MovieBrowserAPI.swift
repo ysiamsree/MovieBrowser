@@ -27,7 +27,9 @@ extension MovieBrowser {
             if query.isEmpty {
                 return "search/movie?api_key=\(apiKey)&page=\(page)"
             } else {
-                return "search/movie?api_key=\(apiKey)&page=\(page)&query=\(query)"
+                let trimmedQuery = query.replacingOccurrences(of: " ", with: "%20")
+                print("trimmed", trimmedQuery)
+                return "search/movie?api_key=\(apiKey)&page=\(page)&query=\(trimmedQuery)"
             }
         case .discover(let page, let sortOrder):
             return "discover/movie?api_key=\(apiKey)&page=\(page)&sort_by=\(sortOrder)"
@@ -70,7 +72,6 @@ extension MovieBrowser {
             print("route.headers = \(route.headers)")
             let sessionManager = Alamofire.SessionManager.default
             sessionManager.session.configuration.timeoutIntervalForRequest = 30
-            let acceptableStatusCodes: [Int] = Array(200..<499)
             return Alamofire.request (route.url(),
                                method: route.method,
                                parameters: body,
@@ -100,7 +101,11 @@ extension MovieBrowser {
             return (MovieBrowserResponseCode.failure.code)
         }
     
-    // Service
+        /// Call this func to get Full movie list
+        /// parameters: - pageNumber - get current page number
+        ///               sortOrder - sortby string
+        ///               completionHandler -
+        /// return: - completionHandler
         class func getDiscoverMovie(pageNumber: Int, sortOrder: String,completionHandler: @escaping (AnyObject?, AnyObject?, _ error: String?) -> Void) {
         request(route: .discover(pageNumber, sortOrder), body: nil).responseJSON(completionHandler: { (responseJson) in
             responseJson.result.ifSuccess {
@@ -131,7 +136,11 @@ extension MovieBrowser {
             }
         })
     }
-        // Search
+        /// Call this func to get search movie list
+        /// parameters: - query - get current page number
+        ///               pageNumber - pageNumber string
+        ///               completionHandler -
+        /// return: - completionHandler
         class func getSearchMovie(query: String,pageNumber: Int,completionHandler: @escaping (AnyObject?, AnyObject?, _ error: String?) -> Void) {
             request(route: .search(pageNumber, query), body: nil).responseJSON(completionHandler: { (responseJson) in
                 responseJson.result.ifSuccess {

@@ -11,6 +11,7 @@ import UIKit
 class SortOrderTableViewCell: UITableViewCell {
 
     @IBOutlet weak var sortOrderTitle: UILabel!
+    @IBOutlet weak var tickImage: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

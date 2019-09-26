@@ -10,14 +10,14 @@ import UIKit
 
 
 protocol applySortOrderDelegate: class {
-    func applySortOrder(orderValue: sortOrder)
+    func applySortOrder(orderValue: sortOrder, selectedIndexValue: Int)
 }
 class MovieFilterViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
    
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var sortTableView: UITableView!
     var selectedSortOrder: sortOrder!
-    var selectedIndex: Int = -1
+    var selectedIndex: Int = 0
     var sorOrderList = [String]()
     weak var applySortDelegate: applySortOrderDelegate?
     override func viewDidLoad() {
@@ -25,25 +25,33 @@ class MovieFilterViewController: UIViewController, UITableViewDelegate, UITableV
         sorOrderList = ["Most popular", "Highest rated"]
         sortTableView.delegate = self
         sortTableView.dataSource = self
+        showSelectedOrder(indexPath: selectedIndex)
         // ensure that deselect is called on all other cells when a cell is selected
-        sortTableView.allowsMultipleSelection = false
         // Do any additional setup after loading the view.
     }
     
+    
+    func showSelectedOrder(indexPath: Int) {
+        selectedIndex = indexPath
+        sortTableView.reloadData()
+    }
     @IBAction func backButtonTapped(_ sender: UIButton) {
-        self.applySortDelegate?.applySortOrder(orderValue: selectedSortOrder)
+        self.applySortDelegate?.applySortOrder(orderValue: selectedSortOrder, selectedIndexValue: selectedIndex)
         navigationController?.popViewController(animated: true)
     }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sorOrderList.count ?? 0
-    }
     
+    
+    //MARK: - UITabaleViewDelegate and UITabaleViewDataSource
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sorOrderList.count
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
          let cell = tableView.dequeueReusableCell(withIdentifier: "SortOrderCell", for: indexPath) as? SortOrderTableViewCell
+        cell?.tickImage.isHidden = true
         if selectedIndex == indexPath.row {
-            cell?.accessoryType = .checkmark
+            cell?.tickImage.isHidden = false
         } else{
-            cell?.accessoryType = .none
+            cell?.tickImage.isHidden = true
         }
         cell?.sortOrderTitle.text = sorOrderList[indexPath.row]
         return cell!
@@ -59,34 +67,9 @@ class MovieFilterViewController: UIViewController, UITableViewDelegate, UITableV
         default:
             break
         }
-        selectedIndex = indexPath.row
-        sortTableView.cellForRow(at: indexPath as IndexPath)?.accessoryType = .checkmark
+        showSelectedOrder(indexPath: indexPath.row)
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-//        switch indexPath.row {
-//        case sortOrder.defaultSort.rawValue:
-//            self.selectedSortOrder = sortOrder.defaultSort
-//        case sortOrder.mostPopular.rawValue:
-//            self.selectedSortOrder = sortOrder.mostPopular
-//        case sortOrder.highestRating.rawValue:
-//            self.selectedSortOrder = sortOrder.highestRating
-//        default:
-//            break
-//        }
-        sortTableView.cellForRow(at: indexPath as IndexPath)?.accessoryType = .none
-    }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
