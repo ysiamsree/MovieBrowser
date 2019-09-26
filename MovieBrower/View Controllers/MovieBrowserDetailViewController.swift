@@ -24,8 +24,6 @@ class MovieBrowserDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
-        print("Deatils", movieBrowserDetails)
         movieTitle.text = movieBrowserDetails?.originalTitle ?? ""
         let posterImage = movieBrowserDetails?.posterPath ?? ""
         let imagePath = imagePosterURL + posterImage
