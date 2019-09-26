@@ -30,7 +30,9 @@ class MovieFilterViewController: UIViewController, UITableViewDelegate, UITableV
         // Do any additional setup after loading the view.
     }
     
-    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     func showSelectedOrder(indexPath: Int) {
         selectedIndex = indexPath
         sortTableView.reloadData()

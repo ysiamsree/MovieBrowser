@@ -49,6 +49,7 @@ class HomeMovieViewController: UIViewController {
         searchBrowserList.results = []
         movieBrowserCollectionView.delegate = self
         movieBrowserCollectionView.dataSource = self
+        searchMovieTextField.delegate = self
         searchMovieTextField.addTarget(self, action: #selector(textFieldDidChange(_:)),
                                        for: UIControl.Event.editingChanged)
 //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
@@ -59,6 +60,9 @@ class HomeMovieViewController: UIViewController {
 //    @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
 //        searchMovieTextField.resignFirstResponder()
 //    }
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     func showHideNoDataWithMainDataLabel() {
         if movieBrowserList.results?.count ?? 0 <= 0 {
             self.movieBrowserCollectionView.isHidden = true
@@ -79,7 +83,13 @@ class HomeMovieViewController: UIViewController {
             self.noResultFound.isHidden = true
         }
     }
-    
+    func showLoadedData() {
+          self.searchActive = false
+        searchBrowserList = movieBrowserList
+        DispatchQueue.main.async {
+            self.movieBrowserCollectionView.reloadData()
+        }
+    }
     @IBAction func filterButtonTapped(_ sender: UIButton) {
         if let movieFilter = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MovieFilterViewController") as? MovieFilterViewController {
             movieFilter.applySortDelegate = self
@@ -124,48 +134,52 @@ class HomeMovieViewController: UIViewController {
         // filter collectionView with textField.text
         if Utilities.isConnectedToInternet {
             let searchText  = textField.text ?? ""
-            MovieBrowserAPI.getSearchMovie(query: searchText,pageNumber: page, completionHandler: { (response, errorResponse, errorMessage) in
-                if errorMessage == nil && errorResponse == nil, let successResponse = response {
-                    let movieList = successResponse as? MovieListModel
-                    self.searchBrowserList.totalResults = movieList?.totalResults ?? 0
-                    self.searchBrowserList.totalPages = movieList?.totalPages ?? 0
-                    self.searchBrowserList.page = movieList?.page ?? 1
-                    if let movieResults = movieList?.results {
-                        if movieResults.count > 0 {
-                            
-                            self.searchActive = true
-                            self.searchBrowserList.results = movieResults
-                            self.showHideNoDataWithSearchDataLabel()
-                        } else {
-                            self.searchBrowserList.results = movieResults
-                            self.showHideNoDataWithSearchDataLabel()
+            if searchText != "" {
+                MovieBrowserAPI.getSearchMovie(query: searchText,pageNumber: page, completionHandler: { (response, errorResponse, errorMessage) in
+                    if errorMessage == nil && errorResponse == nil, let successResponse = response {
+                        let movieList = successResponse as? MovieListModel
+                        self.searchBrowserList.totalResults = movieList?.totalResults ?? 0
+                        self.searchBrowserList.totalPages = movieList?.totalPages ?? 0
+                        self.searchBrowserList.page = movieList?.page ?? 1
+                        if let movieResults = movieList?.results {
+                            if movieResults.count > 0 {
+                                self.searchActive = true
+                                self.searchBrowserList.results = movieResults
+                                self.showHideNoDataWithSearchDataLabel()
+                            } else {
+                                self.searchBrowserList.results = movieResults
+                                self.showHideNoDataWithSearchDataLabel()
+                            }
+                            DispatchQueue.main.async {
+                                self.movieBrowserCollectionView.reloadData()
+                            }
                         }
+                    } else if errorMessage == nil && response == nil, let _ = errorResponse as? ErrorResponse {
+                        print("API Fail")
+                         self.searchActive = false
+                        self.showHideNoDataWithMainDataLabel()
+                        DispatchQueue.main.async {
+                            self.movieBrowserCollectionView.reloadData()
+                        }
+                    } else {
+                        print("API Fail")
+                         self.searchActive = false
+                        self.showHideNoDataWithMainDataLabel()
                         DispatchQueue.main.async {
                             self.movieBrowserCollectionView.reloadData()
                         }
                     }
-                } else if errorMessage == nil && response == nil, let _ = errorResponse as? ErrorResponse {
-                    print("API Fail")
-                    // self.searchActive = false
-                    self.showHideNoDataWithMainDataLabel()
-                    DispatchQueue.main.async {
-                        self.movieBrowserCollectionView.reloadData()
-                    }
-                } else {
-                    print("API Fail")
-                    // self.searchActive = false
-                    self.showHideNoDataWithMainDataLabel()
-                    DispatchQueue.main.async {
-                        self.movieBrowserCollectionView.reloadData()
-                    }
-                }
-            })
+                })
+            } else {
+                showLoadedData()
+            }
         } else {
             Utilities.toastMessage("No internet connection")
         }
+        
     }
 }
-extension HomeMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout  {
+extension HomeMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITextFieldDelegate  {
     //MARK: - Delegate and DataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if searchActive {
@@ -205,6 +219,7 @@ extension HomeMovieViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+         self.searchActive = false
         textField.resignFirstResponder()
         return true
     }

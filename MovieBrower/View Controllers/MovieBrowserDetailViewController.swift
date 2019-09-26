@@ -51,6 +51,9 @@ class MovieBrowserDetailViewController: UIViewController {
         movieVoteAverage.text = String(describing: movieBrowserDetails?.voteAverage ?? 0) + " User rating"
         movieSynopsis.text = movieBrowserDetails?.overview ?? ""
     }
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     @IBAction func backButtonTapped(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
