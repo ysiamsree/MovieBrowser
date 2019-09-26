@@ -13,12 +13,15 @@ class MovieBrowserDetailViewController: UIViewController {
 
     let imagePosterURL :String = "https://image.tmdb.org/t/p/w500"
 
+    @IBOutlet weak var movieScrollView: UIScrollView!
     @IBOutlet weak var moviePoster: UIImageView!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var movieTitle: UILabel!
     @IBOutlet weak var movieLanguage: UILabel!
     @IBOutlet weak var movieType: UILabel!
     @IBOutlet weak var movieReleaseDate: UILabel!
+    @IBOutlet weak var movieVoteAverage: UILabel!
+    @IBOutlet weak var movieSynopsis: UITextView!
     
     var movieBrowserDetails: Result?
     override func viewDidLoad() {
@@ -38,6 +41,8 @@ class MovieBrowserDetailViewController: UIViewController {
         movieLanguage.text = movieBrowserDetails?.originalLanguage ?? ""
         movieType.text = "2D | U/A"
         movieReleaseDate.text = movieBrowserDetails?.releaseDate
+        movieVoteAverage.text = String(describing: movieBrowserDetails?.voteAverage ?? 0) + " User rating"
+        movieSynopsis.text = movieBrowserDetails?.overview ?? ""
         // Do any additional setup after loading the view.
     }
     

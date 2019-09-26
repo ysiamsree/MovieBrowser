@@ -12,7 +12,7 @@ import Alamofire
 
 enum MovieBrowser {
     case search(Int, String)
-    case discover(Int)
+    case discover(Int, String)
     case find
     case downloadImage(Int)
 }
@@ -29,8 +29,8 @@ extension MovieBrowser {
             } else {
                 return "search/movie?api_key=\(apiKey)&page=\(page)&query=\(query)"
             }
-        case .discover(let page):
-            return "discover/movie?api_key=\(apiKey)&page=\(page)"
+        case .discover(let page, let sortOrder):
+            return "discover/movie?api_key=\(apiKey)&page=\(page)&sort_by=\(sortOrder)"
         case .find:
             return "find"
         case .downloadImage(let id):
@@ -101,8 +101,8 @@ extension MovieBrowser {
         }
     
     // Service
-        class func getDiscoverMovie(pageNumber: Int,completionHandler: @escaping (AnyObject?, AnyObject?, _ error: String?) -> Void) {
-        request(route: .discover(pageNumber), body: nil).responseJSON(completionHandler: { (responseJson) in
+        class func getDiscoverMovie(pageNumber: Int, sortOrder: String,completionHandler: @escaping (AnyObject?, AnyObject?, _ error: String?) -> Void) {
+        request(route: .discover(pageNumber, sortOrder), body: nil).responseJSON(completionHandler: { (responseJson) in
             responseJson.result.ifSuccess {
                 let responseCode = isApiCallSuccess(statusCode: responseJson.response?.statusCode)
                 print("responseAPI", responseJson)
