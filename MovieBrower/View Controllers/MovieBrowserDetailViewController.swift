@@ -13,38 +13,49 @@ class MovieBrowserDetailViewController: UIViewController {
 
     let imagePosterURL :String = "https://image.tmdb.org/t/p/w500"
 
+    @IBOutlet weak var movieScrollView: UIScrollView!
     @IBOutlet weak var moviePoster: UIImageView!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var movieTitle: UILabel!
     @IBOutlet weak var movieLanguage: UILabel!
     @IBOutlet weak var movieType: UILabel!
     @IBOutlet weak var movieReleaseDate: UILabel!
+    @IBOutlet weak var movieVoteAverage: UILabel!
+    @IBOutlet weak var movieSynopsis: UITextView!
     
     var movieBrowserDetails: Result?
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        
-        print("Deatils", movieBrowserDetails)
+        loadSelectedMovieDetails()
+        // Do any additional setup after loading the view.
+    }
+    func loadSelectedMovieDetails() {
         movieTitle.text = movieBrowserDetails?.originalTitle ?? ""
         let posterImage = movieBrowserDetails?.posterPath ?? ""
         let imagePath = imagePosterURL + posterImage
         let imageURL = URL(string: imagePath)
-        moviePoster?.sd_setImage(with: imageURL, placeholderImage: nil, completed: { (image, error, _, _) in
-            if let photo = image {
-                if error == nil, let _ = photo.pngData() {
-                    //    UserDefaultsManager.profilePic = profilePic
+        if posterImage != "" {
+            moviePoster?.sd_setImage(with: imageURL, placeholderImage: nil, completed: { (image, error, _, _) in
+                if let photo = image {
+                    if error == nil, let _ = photo.pngData() {
+                        //    UserDefaultsManager.profilePic = profilePic
+                    }
                 }
-            }
-        })
+            })
+        } else {
+            self.moviePoster.image = UIImage(named: "noposter.png")
+        }
         movieLanguage.text = movieBrowserDetails?.originalLanguage ?? ""
         movieType.text = "2D | U/A"
         movieReleaseDate.text = movieBrowserDetails?.releaseDate
-        // Do any additional setup after loading the view.
+        movieVoteAverage.text = String(describing: movieBrowserDetails?.voteAverage ?? 0) + " User rating"
+        movieSynopsis.text = movieBrowserDetails?.overview ?? ""
     }
-    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     @IBAction func backButtonTapped(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: false)
+        self.navigationController?.popViewController(animated: true)
     }
     
     /*

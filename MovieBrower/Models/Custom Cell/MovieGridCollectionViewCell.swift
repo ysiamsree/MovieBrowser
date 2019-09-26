@@ -24,6 +24,9 @@ class MovieGridCollectionViewCell: UICollectionViewCell {
         let posterImage =  movieResults.posterPath ?? ""
         let imagePath = imagePosterURL + posterImage
         let imageURL = URL(string: imagePath)
+        moviePoster.sd_setShowActivityIndicatorView(true)
+        moviePoster.sd_setIndicatorStyle(.white)
+        if posterImage != "" {
         moviePoster?.sd_setImage(with: imageURL, placeholderImage: nil, completed: { (image, error, _, _) in
             if let photo = image {
                 if error == nil, let _ = photo.pngData() {
@@ -31,6 +34,9 @@ class MovieGridCollectionViewCell: UICollectionViewCell {
                 }
             }
         })
+        } else {
+            self.moviePoster.image = UIImage(named: "noposter.png")
+        }
     }
     
 }
