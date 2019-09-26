@@ -24,13 +24,9 @@ extension MovieBrowser {
     public var path: String {
         switch self {
         case .search(let page, let query):
-            if query == "" {
-            return "search/movie?api_key=\(apiKey)&page=\(page)"
-            } else {
             let trimmedQuery = query.replacingOccurrences(of: " ", with: "%20")
             print("trimmed", trimmedQuery)
             return "search/movie?api_key=\(apiKey)&page=\(page)&query=\(trimmedQuery)"
-            }
         case .discover(let page, let sortOrder):
             return "discover/movie?api_key=\(apiKey)&page=\(page)&sort_by=\(sortOrder)"
         case .find:
