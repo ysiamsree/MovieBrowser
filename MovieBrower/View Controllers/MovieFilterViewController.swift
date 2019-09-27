@@ -40,20 +40,13 @@ class MovieFilterViewController: UIViewController, UITableViewDelegate, UITableV
         navigationController?.popViewController(animated: true)
     }
     
-    
     //MARK: - UITabaleViewDelegate and UITabaleViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sorOrderList.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
          let cell = tableView.dequeueReusableCell(withIdentifier: "SortOrderCell", for: indexPath) as? SortOrderTableViewCell
-        cell?.tickImage.isHidden = true
-        if selectedIndex == indexPath.row {
-            cell?.tickImage.isHidden = false
-        } else{
-            cell?.tickImage.isHidden = true
-        }
-        cell?.sortOrderTitle.text = sorOrderList[indexPath.row]
+        cell?.setupCellData(selectedIndex: selectedIndex, IndexPath: indexPath.row, SortedOrderList: sorOrderList)
         return cell!
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
