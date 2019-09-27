@@ -15,6 +15,8 @@
 		3259269A233D1A5000B19B5C /* SortOrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32592699233D1A5000B19B5C /* SortOrderTableViewCell.swift */; };
 		3259269C233D331800B19B5C /* noposter.png in Resources */ = {isa = PBXBuildFile; fileRef = 3259269B233D331800B19B5C /* noposter.png */; };
 		3259269E233D3A5800B19B5C /* tickButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 3259269D233D3A5800B19B5C /* tickButton.png */; };
+		325926A0233DD28500B19B5C /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3259269F233DD28500B19B5C /* Constant.swift */; };
+		325926A2233DD29B00B19B5C /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325926A1233DD29B00B19B5C /* Extension.swift */; };
 		3286CBF8233A6DF0009CFBE9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3286CBF7233A6DF0009CFBE9 /* AppDelegate.swift */; };
 		3286CBFA233A6DF0009CFBE9 /* HomeMovieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3286CBF9233A6DF0009CFBE9 /* HomeMovieViewController.swift */; };
 		3286CBFD233A6DF0009CFBE9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3286CBFB233A6DF0009CFBE9 /* Main.storyboard */; };
@@ -38,6 +40,8 @@
 		32592699233D1A5000B19B5C /* SortOrderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortOrderTableViewCell.swift; sourceTree = "<group>"; };
 		3259269B233D331800B19B5C /* noposter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noposter.png; sourceTree = "<group>"; };
 		3259269D233D3A5800B19B5C /* tickButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tickButton.png; sourceTree = "<group>"; };
+		3259269F233DD28500B19B5C /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Constant.swift; path = "MovieBrower/Models/Custom Cell/Constant.swift"; sourceTree = SOURCE_ROOT; };
+		325926A1233DD29B00B19B5C /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Extension.swift; path = "MovieBrower/Models/Custom Cell/Extension.swift"; sourceTree = SOURCE_ROOT; };
 		3286CBF4233A6DF0009CFBE9 /* MovieBrower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieBrower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3286CBF7233A6DF0009CFBE9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3286CBF9233A6DF0009CFBE9 /* HomeMovieViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMovieViewController.swift; sourceTree = "<group>"; };
@@ -123,6 +127,7 @@
 		3286CC0B233A6E53009CFBE9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				325926A1233DD29B00B19B5C /* Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -130,6 +135,7 @@
 		3286CC0C233A6E60009CFBE9 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
+				3259269F233DD28500B19B5C /* Constant.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -335,8 +341,10 @@
 				3286CC15233A75D1009CFBE9 /* MovieBrowserAPI.swift in Sources */,
 				32592696233D0FFA00B19B5C /* MovieFilterViewController.swift in Sources */,
 				3286CC13233A7512009CFBE9 /* MovieGridCollectionViewCell.swift in Sources */,
+				325926A2233DD29B00B19B5C /* Extension.swift in Sources */,
 				32592698233D148C00B19B5C /* Utilities.swift in Sources */,
 				32592690233CB6A800B19B5C /* MovieBrowserDetailViewController.swift in Sources */,
+				325926A0233DD28500B19B5C /* Constant.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
