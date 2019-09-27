@@ -34,12 +34,8 @@ class Utilities {
         messageLbl.center.x = window.center.x
         messageLbl.layer.cornerRadius = messageLbl.frame.height/2
         messageLbl.layer.masksToBounds = true
-        let windowCount = UIApplication.shared.windows.count
-        
         window.addSubview(messageLbl)
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            
             UIView.animate(withDuration: 0.5, delay: 1.5, options: .curveEaseOut, animations: {
                 messageLbl.alpha = 0
             }) { (_) in

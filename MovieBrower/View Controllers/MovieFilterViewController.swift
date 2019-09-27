@@ -26,8 +26,6 @@ class MovieFilterViewController: UIViewController, UITableViewDelegate, UITableV
         sortTableView.delegate = self
         sortTableView.dataSource = self
         showSelectedOrder(indexPath: selectedIndex)
-        // ensure that deselect is called on all other cells when a cell is selected
-        // Do any additional setup after loading the view.
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

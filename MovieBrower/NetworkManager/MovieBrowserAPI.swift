@@ -63,6 +63,7 @@ extension MovieBrowser {
     }
 }
 class MovieBrowserAPI {
+    static let imagePosterURL:String = "https://image.tmdb.org/t/p/w500"
     //This is standard Alamofire Request Builder
     class func request(route: MovieBrowser, body: Parameters?) -> DataRequest {
         print("route.headers = \(route.headers)")
