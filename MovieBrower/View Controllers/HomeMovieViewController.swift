@@ -15,11 +15,10 @@ enum sortOrder: Int {
     case mostPopular = 0
     case highestRating = 1
     
-    
     public var sortString: String {
         switch self {
         case .mostPopular:
-           return "popularity.desc"
+            return "popularity.desc"
         case .highestRating:
             return "vote_average.desc"
         case .defaultSort:
@@ -45,6 +44,10 @@ class HomeMovieViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initialSetup()
+    }
+    func initialSetup() {
+        noResultFound.text = "No Movie found"
         movieBrowserList.results = []
         searchBrowserList.results = []
         movieBrowserCollectionView.delegate = self
@@ -52,53 +55,13 @@ class HomeMovieViewController: UIViewController {
         searchMovieTextField.delegate = self
         searchMovieTextField.addTarget(self, action: #selector(textFieldDidChange(_:)),
                                        for: UIControl.Event.editingChanged)
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
-//        self.view.addGestureRecognizer(tapGesture)
         fetchMovieList(pageNumber: page, sortOrder: sortedBy)
-        noResultFound.text = "No Movie found"
     }
-//    @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
-//        searchMovieTextField.resignFirstResponder()
-//    }
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    func showHideNoDataWithMainDataLabel() {
-        if movieBrowserList.results?.count ?? 0 <= 0 {
-            self.movieBrowserCollectionView.isHidden = true
-            self.noResultFound.isHidden = false
-        }
-        else {
-            self.movieBrowserCollectionView.isHidden = false
-            self.noResultFound.isHidden = true
-        }
-    }
-    func showHideNoDataWithSearchDataLabel() {
-        if searchBrowserList.results?.count ?? 0 <= 0 {
-            self.movieBrowserCollectionView.isHidden = true
-            self.noResultFound.isHidden = false
-        }
-        else {
-            self.movieBrowserCollectionView.isHidden = false
-            self.noResultFound.isHidden = true
-        }
-    }
-    func showLoadedData() {
-          self.searchActive = false
-        searchBrowserList = movieBrowserList
-        DispatchQueue.main.async {
-            self.movieBrowserCollectionView.reloadData()
-        }
-    }
-    @IBAction func filterButtonTapped(_ sender: UIButton) {
-        if let movieFilter = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MovieFilterViewController") as? MovieFilterViewController {
-            movieFilter.applySortDelegate = self
-            movieFilter.selectedSortOrder = selectedSortOrder
-            movieFilter.selectedIndex = selectedIndex
-            navigationController?.pushViewController(movieFilter, animated: true)
-        }
-    }
     
+    /// call this API to fetch Movie List
     func fetchMovieList(pageNumber: Int,sortOrder: String) {
         if Utilities.isConnectedToInternet {
             MovieBrowserAPI.getDiscoverMovie(pageNumber: pageNumber, sortOrder: sortOrder, completionHandler: { (response, errorResponse, errorMessage) in
@@ -130,10 +93,8 @@ class HomeMovieViewController: UIViewController {
             Utilities.toastMessage("No internet connection")
         }
     }
-    @objc func textFieldDidChange(_ textField: UITextField) {
-        // filter collectionView with textField.text
+    func getMovieListBySearch(searchText: String) {
         if Utilities.isConnectedToInternet {
-            let searchText  = textField.text ?? ""
             if searchText != "" {
                 MovieBrowserAPI.getSearchMovie(query: searchText,pageNumber: page, completionHandler: { (response, errorResponse, errorMessage) in
                     if errorMessage == nil && errorResponse == nil, let successResponse = response {
@@ -156,14 +117,14 @@ class HomeMovieViewController: UIViewController {
                         }
                     } else if errorMessage == nil && response == nil, let _ = errorResponse as? ErrorResponse {
                         print("API Fail")
-                         self.searchActive = false
+                        self.searchActive = false
                         self.showHideNoDataWithMainDataLabel()
                         DispatchQueue.main.async {
                             self.movieBrowserCollectionView.reloadData()
                         }
                     } else {
                         print("API Fail")
-                         self.searchActive = false
+                        self.searchActive = false
                         self.showHideNoDataWithMainDataLabel()
                         DispatchQueue.main.async {
                             self.movieBrowserCollectionView.reloadData()
@@ -176,11 +137,53 @@ class HomeMovieViewController: UIViewController {
         } else {
             Utilities.toastMessage("No internet connection")
         }
-        
+    }
+    /// TextField Change and call the Api
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        let searchedText = textField.text ?? ""
+        getMovieListBySearch(searchText: searchedText)
+    }
+    
+    private func showHideNoDataWithMainDataLabel() {
+        if movieBrowserList.results?.count ?? 0 <= 0 {
+            self.movieBrowserCollectionView.isHidden = true
+            self.noResultFound.isHidden = false
+        }
+        else {
+            self.movieBrowserCollectionView.isHidden = false
+            self.noResultFound.isHidden = true
+        }
+    }
+    private func showHideNoDataWithSearchDataLabel() {
+        if searchBrowserList.results?.count ?? 0 <= 0 {
+            self.movieBrowserCollectionView.isHidden = true
+            self.noResultFound.isHidden = false
+        }
+        else {
+            self.movieBrowserCollectionView.isHidden = false
+            self.noResultFound.isHidden = true
+        }
+    }
+    private func showLoadedData() {
+        self.searchActive = false
+        searchBrowserList = movieBrowserList
+        DispatchQueue.main.async {
+            self.movieBrowserCollectionView.reloadData()
+        }
+    }
+    //MARK: - @IBAction
+    /// This button action to sort the Movie List
+    @IBAction func filterButtonTapped(_ sender: UIButton) {
+        if let movieFilter = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MovieFilterViewController") as? MovieFilterViewController {
+            movieFilter.applySortDelegate = self
+            movieFilter.selectedSortOrder = selectedSortOrder
+            movieFilter.selectedIndex = selectedIndex
+            navigationController?.pushViewController(movieFilter, animated: true)
+        }
     }
 }
+//MARK: - UICollectionViewDelegate and UICollectionViewDataSource
 extension HomeMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITextFieldDelegate  {
-    //MARK: - Delegate and DataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if searchActive {
             return searchBrowserList.results?.count ?? 0
@@ -188,7 +191,6 @@ extension HomeMovieViewController: UICollectionViewDelegate, UICollectionViewDat
             return movieBrowserList.results?.count ?? 0
         }
     }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let movieCell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieGridCell", for: indexPath) as? MovieGridCollectionViewCell
         if searchActive {
@@ -219,7 +221,7 @@ extension HomeMovieViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-         self.searchActive = false
+        self.searchActive = false
         textField.resignFirstResponder()
         return true
     }
@@ -245,13 +247,11 @@ extension HomeMovieViewController: applySortOrderDelegate {
     func applySortOrder(orderValue: sortOrder, selectedIndexValue: Int) {
         selectedSortOrder = orderValue
         selectedIndex = selectedIndexValue
-        var sortArray: [Result]?
         if searchActive {
             searchBrowserList.results = []
         } else {
             movieBrowserList.results = []
         }
-        print("sortCount", movieBrowserList.results?.count)
         switch orderValue {
         case .mostPopular:
             page = 1
