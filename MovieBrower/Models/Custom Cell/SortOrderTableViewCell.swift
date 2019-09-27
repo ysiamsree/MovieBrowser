@@ -23,5 +23,13 @@ class SortOrderTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    func setupCellData(selectedIndex: Int, IndexPath: Int, SortedOrderList: [String]) {
+        tickImage.isHidden = true
+        if selectedIndex == IndexPath {
+            tickImage.isHidden = false
+        } else{
+            tickImage.isHidden = true
+        }
+        sortOrderTitle.text = SortedOrderList[IndexPath]
+    }
 }

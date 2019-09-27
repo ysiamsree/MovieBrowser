@@ -55,7 +55,12 @@ class MovieBrowserDetailViewController: UIViewController {
         } else {
             movieLanguage.text = "Language not mentioned"
         }
-        movieReleaseDate.text = movieBrowserDetails?.releaseDate
+         let releaseDate = movieBrowserDetails?.releaseDate ?? ""
+         if releaseDate != "" {
+            movieReleaseDate.text = Utilities.convertDateFormater(releaseDate) + " Release"
+        } else {
+            movieReleaseDate.text = "No release date yet"
+        }
         movieVoteAverage.text = String(describing: movieBrowserDetails?.voteAverage ?? 0) + " User rating"
         movieSynopsis.text = movieBrowserDetails?.overview ?? ""
     }

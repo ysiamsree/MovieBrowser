@@ -43,4 +43,12 @@ class Utilities {
             }
         }
     }
+    /// Convert Date formater
+    class func convertDateFormater(_ date: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-mm-dd"
+        let date = dateFormatter.date(from: date)
+        dateFormatter.dateFormat = "DD MMM YYYY"
+        return  dateFormatter.string(from: date!)
+    }
 }
